@@ -14,7 +14,7 @@
     align-items: center;
     font-family: 'Georgia', serif;
     overflow: hidden;
-    perspective: 2000px;
+    perspective: 2500px;
   }
 
   .stars {
@@ -53,10 +53,10 @@
 
   /* ===== LIVRO ===== */
   .book-scene {
-    width: 92vw;
+    width: 95vw;
     max-width: 1100px;
-    height: 88vh;
-    max-height: 750px;
+    height: 65vh;
+    max-height: 650px;
     position: relative;
     z-index: 10;
     transform-style: preserve-3d;
@@ -67,6 +67,7 @@
     width: 100%;
     height: 100%;
     transform-style: preserve-3d;
+    transform: rotateX(5deg);
   }
 
   /* CAPA */
@@ -75,15 +76,15 @@
     width: 100%;
     height: 100%;
     background: linear-gradient(135deg, #4a1d3f 0%, #2a0f28 50%, #1a0818 100%);
-    border-radius: 8px 18px 18px 8px;
+    border-radius: 6px 12px 12px 6px;
     box-shadow:
       inset 0 0 80px rgba(0,0,0,0.5),
       0 20px 80px rgba(0,0,0,0.8),
       0 0 100px rgba(139, 92, 246, 0.3);
     transform-origin: left center;
-    transition: transform 1.8s cubic-bezier(0.645, 0.045, 0.355, 1);
+    transition: transform 2s cubic-bezier(0.645, 0.045, 0.355, 1);
     transform-style: preserve-3d;
-    z-index: 5;
+    z-index: 100;
     border-left: 10px solid #2a0f28;
     display: flex;
     flex-direction: column;
@@ -96,27 +97,27 @@
   }
 
   .book.open .cover {
-    transform: rotateY(-160deg);
+    transform: rotateY(-175deg);
     pointer-events: none;
   }
 
   .cover::before {
     content: '';
     position: absolute;
-    inset: 25px;
+    inset: 20px;
     border: 2px solid rgba(212, 175, 55, 0.35);
-    border-radius: 6px;
+    border-radius: 4px;
     pointer-events: none;
   }
 
   .cover-ornament-top, .cover-ornament-bot {
     color: #d4af37;
-    font-size: 28px;
+    font-size: 26px;
     letter-spacing: 12px;
     animation: glow 2s infinite ease-in-out;
   }
-  .cover-ornament-top { margin-bottom: 30px; }
-  .cover-ornament-bot { margin-top: 30px; }
+  .cover-ornament-top { margin-bottom: 25px; }
+  .cover-ornament-bot { margin-top: 25px; }
 
   @keyframes glow {
     0%, 100% { text-shadow: 0 0 10px #d4af37, 0 0 20px #d4af37; }
@@ -124,19 +125,19 @@
   }
 
   .cover-title {
-    font-size: clamp(36px, 5vw, 58px);
+    font-size: clamp(32px, 5vw, 52px);
     font-style: italic;
     color: #f4e4bc;
     text-shadow: 0 0 30px rgba(212, 175, 55, 0.6);
-    margin-bottom: 15px;
+    margin-bottom: 12px;
     letter-spacing: 3px;
   }
 
   .cover-subtitle {
-    font-size: clamp(14px, 2vw, 20px);
+    font-size: clamp(13px, 2vw, 18px);
     color: #d4af37;
     font-style: italic;
-    margin-bottom: 40px;
+    margin-bottom: 35px;
     letter-spacing: 4px;
   }
 
@@ -144,9 +145,9 @@
     background: transparent;
     border: 2px solid #d4af37;
     color: #f4e4bc;
-    padding: 14px 40px;
+    padding: 12px 35px;
     font-family: 'Georgia', serif;
-    font-size: 18px;
+    font-size: 16px;
     font-style: italic;
     cursor: pointer;
     border-radius: 30px;
@@ -160,28 +161,46 @@
   }
 
   /* PÁGINAS */
-  .pages-container {
+  .pages-wrapper {
     position: absolute;
     width: 100%;
     height: 100%;
+    transform-style: preserve-3d;
+  }
+
+  .page {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    transform-style: preserve-3d;
+    transform-origin: left center;
+    transition: transform 1.2s cubic-bezier(0.645, 0.045, 0.355, 1);
+    cursor: pointer;
+  }
+
+  .page.flipped {
+    transform: rotateY(-175deg);
+  }
+
+  .page-front, .page-back {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden;
     background: linear-gradient(135deg, #fdf6e3 0%, #f4e4bc 50%, #e8d5a0 100%);
-    border-radius: 4px 14px 14px 4px;
+    border-radius: 4px 10px 10px 4px;
     box-shadow:
-      inset 0 0 80px rgba(139, 90, 43, 0.15),
-      0 10px 50px rgba(0,0,0,0.5);
-    border-left: 8px solid #c9a86b;
-    opacity: 0;
-    transition: opacity 0.8s ease 0.8s;
+      inset 0 0 60px rgba(139, 90, 43, 0.15),
+      0 5px 30px rgba(0,0,0,0.3);
+    border-left: 6px solid #c9a86b;
+    padding: clamp(25px, 4vw, 50px) clamp(30px, 5vw, 70px);
     display: flex;
     flex-direction: column;
+    justify-content: center;
     overflow: hidden;
   }
 
-  .book.open .pages-container {
-    opacity: 1;
-  }
-
-  .pages-container::before {
+  .page-front::before, .page-back::before {
     content: '';
     position: absolute;
     top: 0; left: 0;
@@ -190,64 +209,44 @@
       radial-gradient(circle at 15% 25%, rgba(139, 90, 43, 0.06) 0%, transparent 50%),
       radial-gradient(circle at 85% 75%, rgba(139, 90, 43, 0.08) 0%, transparent 50%);
     pointer-events: none;
-    z-index: 1;
   }
 
-  /* Área de texto */
-  .page-area {
-    flex: 1;
+  .page-back {
+    transform: rotateY(180deg);
+  }
+
+  .page-content {
     position: relative;
-    overflow: hidden;
     z-index: 2;
-  }
-
-  .page {
-    position: absolute;
-    inset: 0;
-    padding: clamp(30px, 5vw, 60px) clamp(30px, 6vw, 80px);
+    color: #3a2418;
+    line-height: 1.9;
+    font-size: clamp(14px, 1.6vw, 17px);
+    height: 100%;
     display: flex;
     flex-direction: column;
     justify-content: center;
-    color: #3a2418;
-    line-height: 2;
-    font-size: clamp(15px, 1.8vw, 19px);
-    opacity: 0;
-    transform: translateX(60px);
-    transition: all 0.7s cubic-bezier(0.4, 0, 0.2, 1);
-    pointer-events: none;
   }
 
-  .page.active {
-    opacity: 1;
-    transform: translateX(0);
-    pointer-events: auto;
-  }
-
-  .page.exit-left {
-    opacity: 0;
-    transform: translateX(-60px);
-  }
-
-  .page h1 {
-    font-size: clamp(24px, 3.5vw, 38px);
+  .page-content h1 {
+    font-size: clamp(22px, 3vw, 32px);
     font-style: italic;
     color: #6b3410;
     text-align: center;
-    margin-bottom: 25px;
+    margin-bottom: 20px;
     text-shadow: 1px 1px 2px rgba(0,0,0,0.08);
   }
 
-  .page p {
-    margin-bottom: 16px;
+  .page-content p {
+    margin-bottom: 14px;
     text-align: justify;
-    text-indent: 35px;
+    text-indent: 30px;
     font-style: italic;
   }
 
-  .page .signature {
+  .page-content .signature {
     text-align: right;
-    margin-top: 25px;
-    font-size: clamp(18px, 2.2vw, 24px);
+    margin-top: 20px;
+    font-size: clamp(16px, 2vw, 20px);
     color: #6b3410;
     font-style: italic;
     text-indent: 0;
@@ -256,40 +255,45 @@
   .ornament {
     text-align: center;
     color: #8b5a2b;
-    font-size: 20px;
-    margin: 15px 0;
+    font-size: 18px;
+    margin: 12px 0;
     letter-spacing: 10px;
   }
 
   /* Navegação */
   .nav-bar {
+    position: fixed;
+    bottom: 25px;
+    left: 50%;
+    transform: translateX(-50%);
     display: flex;
-    justify-content: space-between;
+    gap: 20px;
     align-items: center;
-    padding: 15px clamp(20px, 4vw, 50px);
-    z-index: 5;
-    position: relative;
-    border-top: 1px solid rgba(139, 90, 43, 0.15);
-    background: rgba(244, 228, 188, 0.5);
+    z-index: 200;
+    opacity: 0;
+    transition: opacity 0.5s 2s;
+  }
+
+  .book.open ~ .nav-bar {
+    opacity: 1;
   }
 
   .nav-btn {
-    background: transparent;
-    border: 2px solid #8b5a2b;
-    color: #6b3410;
-    padding: 10px 28px;
+    background: rgba(212, 175, 55, 0.15);
+    border: 2px solid #d4af37;
+    color: #f4e4bc;
+    padding: 10px 25px;
     font-family: 'Georgia', serif;
-    font-size: clamp(13px, 1.5vw, 16px);
+    font-size: 14px;
     font-style: italic;
     cursor: pointer;
     border-radius: 25px;
     letter-spacing: 1px;
     transition: all 0.3s;
-    min-width: 140px;
   }
   .nav-btn:hover:not(:disabled) {
-    background: rgba(139, 90, 43, 0.15);
-    box-shadow: 0 0 15px rgba(139, 90, 43, 0.2);
+    background: rgba(212, 175, 55, 0.3);
+    box-shadow: 0 0 20px rgba(212, 175, 55, 0.4);
     transform: scale(1.05);
   }
   .nav-btn:disabled {
@@ -298,29 +302,10 @@
   }
 
   .page-indicator {
+    color: #f4e4bc;
     font-style: italic;
-    color: #8b5a2b;
-    font-size: clamp(13px, 1.4vw, 16px);
+    font-size: 14px;
     letter-spacing: 2px;
-  }
-
-  .dots {
-    display: flex;
-    gap: 8px;
-    justify-content: center;
-    margin-top: 6px;
-  }
-  .dot {
-    width: 8px; height: 8px;
-    border-radius: 50%;
-    background: #c9a86b;
-    transition: all 0.3s;
-    cursor: pointer;
-  }
-  .dot.active {
-    background: #6b3410;
-    transform: scale(1.4);
-    box-shadow: 0 0 8px rgba(107, 52, 16, 0.4);
   }
 
   /* Botão fechar */
@@ -338,16 +323,18 @@
     font-style: italic;
     font-size: 14px;
     opacity: 0;
-    transition: opacity 0.5s 1.5s, background 0.3s;
-    z-index: 100;
+    transition: opacity 0.5s 2s, background 0.3s;
+    z-index: 200;
     letter-spacing: 1px;
   }
   .book.open ~ .close-btn { opacity: 1; }
   .close-btn:hover { background: rgba(212, 175, 55, 0.35); }
 
-  @media (max-width: 600px) {
-    .book-scene { width: 97vw; height: 92vh; }
-    .nav-btn { min-width: 100px; padding: 8px 16px; }
+  @media (max-width: 768px) {
+    .book-scene { width: 98vw; height: 75vh; }
+    .page-front, .page-back { padding: 20px 25px; }
+    .nav-bar { gap: 10px; }
+    .nav-btn { padding: 8px 16px; font-size: 12px; }
   }
 </style>
 </head>
@@ -368,60 +355,74 @@
     </div>
 
     <!-- PÁGINAS -->
-    <div class="pages-container">
-      <div class="page-area">
+    <div class="pages-wrapper">
 
-        <!-- Página 1 -->
-        <div class="page active" data-page="0">
-          <h1>Passar esses dias com você...</h1>
-          <div class="ornament">❦ ✦ ❦</div>
-          <p>Passar esses dias com você foi uma coisa especial para mim — daquelas coisas que a gente sente no peito antes mesmo de conseguir explicar com palavras. Não foi só sobre o tempo que passou, foi sobre como ele passou: devagar, como se o mundo tivesse decidido, só por um instante, respirar no mesmo ritmo que a gente.</p>
-          <p>Eu não sei exatamente em que momento percebi que aqueles dias seriam diferentes. Talvez tenha sido no jeito como você ria de coisas bobas, talvez tenha sido no silêncio confortável que a gente compartilhava sem precisar preencher com conversa.</p>
+      <!-- Página 1 -->
+      <div class="page" data-page="0">
+        <div class="page-front">
+          <div class="page-content">
+            <h1>Passar esses dias com você...</h1>
+            <div class="ornament">❦ ✦ ❦</div>
+            <p>Passar esses dias com você foi uma coisa especial para mim — daquelas coisas que a gente sente no peito antes mesmo de conseguir explicar com palavras. Não foi só sobre o tempo que passou, foi sobre como ele passou: devagar, como se o mundo tivesse decidido, só por um instante, respirar no mesmo ritmo que a gente.</p>
+            <p>Eu não sei exatamente em que momento percebi que aqueles dias seriam diferentes. Talvez tenha sido no jeito como você ria de coisas bobas, talvez tenha sido no silêncio confortável que a gente compartilhava sem precisar preencher com conversa.</p>
+          </div>
         </div>
-
-        <!-- Página 2 -->
-        <div class="page" data-page="1">
-          <p>Talvez tenha sido só no simples fato de você estar ali — presente, inteiro, inteiro de um jeito que poucos conseguem ser. Tem gente que passa pela nossa vida e deixa marca. Você, nesses dias, deixou algo mais raro: deixou a sensação de que o tempo pode, sim, ser gentil.</p>
-          <p>De que existem manhãs que valem a pena só porque alguém vai estar do outro lado delas. De que café, conversa, caminhada, olhar pela janela — tudo isso vira memória bonita quando é compartilhado com a pessoa certa.</p>
+        <div class="page-back">
+          <div class="page-content">
+            <p>Talvez tenha sido só no simples fato de você estar ali — presente, inteiro, inteiro de um jeito que poucos conseguem ser. Tem gente que passa pela nossa vida e deixa marca. Você, nesses dias, deixou algo mais raro: deixou a sensação de que o tempo pode, sim, ser gentil.</p>
+            <p>De que existem manhãs que valem a pena só porque alguém vai estar do outro lado delas. De que café, conversa, caminhada, olhar pela janela — tudo isso vira memória bonita quando é compartilhado com a pessoa certa.</p>
+          </div>
         </div>
-
-        <!-- Página 3 -->
-        <div class="page" data-page="2">
-          <p>Eu guardei cada detalhe. O jeito que você falava, as pausas entre as frases, as coisas que você nem percebeu que disse e que ficaram ecoando na minha cabeça dias depois. Guardei os pequenos gestos — aquele olhar de canto, aquela mão que encostava sem pedir licença, aquele "tchau" que já vinha com saudade de amanhã.</p>
-          <p>Se eu pudesse escolher uma palavra para descrever o que foi viver esses dias ao seu lado, seria <em>leveza</em>. Uma leveza que não é falta de profundidade — é exatamente o contrário. É a profundidade que se permite sorrir.</p>
-        </div>
-
-        <!-- Página 4 -->
-        <div class="page" data-page="3">
-          <p>É o carinho que não pesa, que não cobra, que só existe porque existe. Obrigado por ter sido você. Obrigado pelos dias, pelas noites, pelos quase-nadas que viraram tudo. Obrigado por me lembrar que a vida, quando bem vivida, cabe inteira em um olhar, em uma risada, em um "fica mais um pouco".</p>
-          <p>Que esses dias não sejam um ponto final, mas uma vírgula. Que a gente ainda tenha muitos outros — iguais, diferentes, melhores, piores, nossos.</p>
-        </div>
-
-        <!-- Página 5 -->
-        <div class="page" data-page="4">
-          <p>Que o que a gente construiu nesses dias continue crescendo em silêncio, mesmo quando a distância ou a rotina tentarem dizer o contrário.</p>
-          <p>Porque passar esses dias com você, sinceramente, foi uma das coisas mais especiais que me aconteceram. E eu quero que você saiba disso — hoje, amanhã, e sempre que você precisar lembrar que é importante pra alguém.</p>
-          <div class="ornament">✦ ❦ ✦</div>
-          <p class="signature">Com todo o carinho do mundo,<br>— de quem não vai esquecer.</p>
-        </div>
-
       </div>
 
-      <!-- Navegação -->
-      <div class="nav-bar">
-        <button class="nav-btn" id="prevBtn" onclick="changePage(-1)" disabled>← Anterior</button>
-        <div style="text-align:center">
-          <div class="page-indicator" id="pageIndicator">Página 1 de 5</div>
-          <div class="dots" id="dots"></div>
+      <!-- Página 2 -->
+      <div class="page" data-page="1">
+        <div class="page-front">
+          <div class="page-content">
+            <p>Eu guardei cada detalhe. O jeito que você falava, as pausas entre as frases, as coisas que você nem percebeu que disse e que ficaram ecoando na minha cabeça dias depois. Guardei os pequenos gestos — aquele olhar de canto, aquela mão que encostava sem pedir licença, aquele "tchau" que já vinha com saudade de amanhã.</p>
+            <p>Se eu pudesse escolher uma palavra para descrever o que foi viver esses dias ao seu lado, seria <em>leveza</em>. Uma leveza que não é falta de profundidade — é exatamente o contrário. É a profundidade que se permite sorrir.</p>
+          </div>
         </div>
-        <button class="nav-btn" id="nextBtn" onclick="changePage(1)">Próxima →</button>
+        <div class="page-back">
+          <div class="page-content">
+            <p>É o carinho que não pesa, que não cobra, que só existe porque existe. Obrigado por ter sido você. Obrigado pelos dias, pelas noites, pelos quase-nadas que viraram tudo. Obrigado por me lembrar que a vida, quando bem vivida, cabe inteira em um olhar, em uma risada, em um "fica mais um pouco".</p>
+            <p>Que esses dias não sejam um ponto final, mas uma vírgula. Que a gente ainda tenha muitos outros — iguais, diferentes, melhores, piores, nossos.</p>
+          </div>
+        </div>
       </div>
+
+      <!-- Página 3 -->
+      <div class="page" data-page="2">
+        <div class="page-front">
+          <div class="page-content">
+            <p>Que o que a gente construiu nesses dias continue crescendo em silêncio, mesmo quando a distância ou a rotina tentarem dizer o contrário.</p>
+            <p>Porque passar esses dias com você, sinceramente, foi uma das coisas mais especiais que me aconteceram. E eu quero que você saiba disso — hoje, amanhã, e sempre que você precisar lembrar que é importante pra alguém.</p>
+            <div class="ornament">✦ ❦ ✦</div>
+            <p class="signature">Com todo o carinho do mundo,<br>— de quem não vai esquecer.</p>
+          </div>
+        </div>
+        <div class="page-back">
+          <div class="page-content">
+            <p style="text-align: center; font-size: 1.2em; margin-top: 40%;">
+              ✦ Fim ✦<br><br>
+              <em>Obrigado por ler até aqui.</em>
+            </p>
+          </div>
+        </div>
+      </div>
+
     </div>
 
   </div>
 </div>
 
 <button class="close-btn" onclick="closeBook()">✦ Fechar o livro ✦</button>
+
+<div class="nav-bar">
+  <button class="nav-btn" id="prevBtn" onclick="changePage(-1)" disabled>← Anterior</button>
+  <div class="page-indicator" id="pageIndicator">Página 1 de 6</div>
+  <button class="nav-btn" id="nextBtn" onclick="changePage(1)">Próxima →</button>
+</div>
 
 <script>
   // Estrelas
@@ -457,86 +458,54 @@
   // Livro
   let currentPage = 0;
   const pages = document.querySelectorAll('.page');
-  const totalPages = pages.length;
+  const totalPages = pages.length * 2; // frente e verso
   const prevBtn = document.getElementById('prevBtn');
   const nextBtn = document.getElementById('nextBtn');
   const indicator = document.getElementById('pageIndicator');
-  const dotsContainer = document.getElementById('dots');
-
-  // Criar dots
-  for (let i = 0; i < totalPages; i++) {
-    const dot = document.createElement('div');
-    dot.className = 'dot' + (i === 0 ? ' active' : '');
-    dot.onclick = () => goToPage(i);
-    dotsContainer.appendChild(dot);
-  }
 
   function updateNav() {
     prevBtn.disabled = currentPage === 0;
-    nextBtn.disabled = currentPage === totalPages - 1;
-    indicator.textContent = `Página ${currentPage + 1} de ${totalPages}`;
-    document.querySelectorAll('.dot').forEach((d, i) => {
-      d.classList.toggle('active', i === currentPage);
-    });
+    nextBtn.disabled = currentPage === totalPages;
+    indicator.textContent = `Página ${currentPage + 1} de ${totalPages + 1}`;
   }
 
   function changePage(dir) {
     const newPage = currentPage + dir;
-    if (newPage < 0 || newPage >= totalPages) return;
-    goToPage(newPage);
-  }
+    if (newPage < 0 || newPage > totalPages) return;
 
-  function goToPage(index) {
-    if (index === currentPage) return;
-    const dir = index > currentPage ? 1 : -1;
+    if (dir > 0) {
+      // Avançar: virar página atual
+      const pageIndex = Math.floor(currentPage / 2);
+      if (pageIndex < pages.length) {
+        pages[pageIndex].classList.add('flipped');
+      }
+    } else {
+      // Voltar: desvirar página anterior
+      const pageIndex = Math.floor((currentPage - 1) / 2);
+      if (pageIndex >= 0 && pageIndex < pages.length) {
+        pages[pageIndex].classList.remove('flipped');
+      }
+    }
 
-    pages[currentPage].classList.remove('active');
-    pages[currentPage].classList.add(dir > 0 ? 'exit-left' : '');
-    pages[currentPage].style.transform = dir > 0 ? 'translateX(-60px)' : 'translateX(60px)';
-    pages[currentPage].style.opacity = '0';
-
-    currentPage = index;
-
-    pages[currentPage].style.transform = dir > 0 ? 'translateX(60px)' : 'translateX(-60px)';
-    pages[currentPage].style.opacity = '0';
-
-    requestAnimationFrame(() => {
-      requestAnimationFrame(() => {
-        pages[currentPage].classList.add('active');
-        pages[currentPage].style.transform = '';
-        pages[currentPage].style.opacity = '';
-      });
-    });
-
-    setTimeout(() => {
-      pages.forEach((p, i) => {
-        if (i !== currentPage) {
-          p.classList.remove('active', 'exit-left');
-          p.style.transform = '';
-          p.style.opacity = '';
-        }
-      });
-    }, 700);
-
+    currentPage = newPage;
     updateNav();
   }
 
   function openBook() {
     document.getElementById('book').classList.add('open');
+    setTimeout(() => {
+      currentPage = 1;
+      updateNav();
+    }, 2000);
   }
 
   function closeBook() {
     document.getElementById('book').classList.remove('open');
     setTimeout(() => {
+      pages.forEach(p => p.classList.remove('flipped'));
       currentPage = 0;
-      pages.forEach((p, i) => {
-        p.classList.remove('active', 'exit-left');
-        p.style.transform = '';
-        p.style.opacity = '';
-        if (i === 0) p.classList.add('active');
-      });
       updateNav();
-    }, 1800);
+    }, 2000);
   }
 
   // Teclado
@@ -548,6 +517,15 @@
     if (e.key === 'ArrowRight' || e.key === ' ') changePage(1);
     if (e.key === 'ArrowLeft') changePage(-1);
     if (e.key === 'Escape') closeBook();
+  });
+
+  // Clique nas páginas
+  pages.forEach((page, index) => {
+    page.addEventListener('click', () => {
+      if (!page.classList.contains('flipped')) {
+        changePage(1);
+      }
+    });
   });
 
   updateNav();
