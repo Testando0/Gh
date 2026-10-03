@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Um Livro Mágico Para Você</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  
+  body {
+    min-height: 100vh;
+    background: radial-gradient(ellipse at center, #1a0b2e 0%, #0a0418 70%, #000 100%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: 'Georgia', serif;
+    overflow: hidden;
+    perspective: 2000px;
+  }
+
+  /* Estrelas de fundo */
+  .stars {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    pointer-events: none;
+    z-index: 0;
+  }
+  .star {
+    position: absolute;
+    background: white;
+    border-radius: 50%;
+    animation: twinkle 3s infinite ease-in-out;
+  }
+  @keyframes twinkle {
+    0%, 100% { opacity: 0.2; transform: scale(0.8); }
+    50% { opacity: 1; transform: scale(1.2); }
+  }
+
+  /* Partículas mágicas */
+  .particle {
+    position: absolute;
+    width: 4px; height: 4px;
+    background: radial-gradient(circle, #ffd700, transparent);
+    border-radius: 50%;
+    pointer-events: none;
+    animation: float 8s infinite ease-in-out;
+  }
+  @keyframes float {
+    0% { transform: translateY(100vh) translateX(0); opacity: 0; }
+    10% { opacity: 1; }
+    90% { opacity: 1; }
+    100% { transform: translateY(-100px) translateX(50px); opacity: 0; }
+  }
+
+  /* Container do livro */
+  .book-scene {
+    width: 700px;
+    height: 500px;
+    position: relative;
+    z-index: 10;
+    transform-style: preserve-3d;
+  }
+
+  .book {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    transform-style: preserve-3d;
+    transition: transform 1.5s cubic-bezier(0.645, 0.045, 0.355, 1);
+  }
+
+  .book.open {
+    transform: rotateY(-5deg);
+  }
+
+  /* Capa */
+  .cover {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, #4a1d3f 0%, #2a0f28 50%, #1a0818 100%);
+    border-radius: 8px 15px 15px 8px;
+    box-shadow: 
+      inset 0 0 60px rgba(0,0,0,0.5),
+      0 20px 60px rgba(0,0,0,0.8),
+      0 0 80px rgba(139, 92, 246, 0.3);
+    transform-origin: left center;
+    transition: transform 1.8s cubic-bezier(0.645, 0.045, 0.355, 1);
+    transform-style: preserve-3d;
+    z-index: 5;
+    border-left: 8px solid #2a0f28;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: #f4e4bc;
+    padding: 40px;
+    text-align: center;
+  }
+
+  .book.open .cover {
+    transform: rotateY(-160deg);
+  }
+
+  .cover::before {
+    content: '';
+    position: absolute;
+    inset: 20px;
+    border: 2px solid rgba(212, 175, 55, 0.4);
+    border-radius: 4px;
+    pointer-events: none;
+  }
+
+  .cover::after {
+    content: '✦';
+    position: absolute;
+    top: 30px; left: 50%;
+    transform: translateX(-50%);
+    color: #d4af37;
+    font-size: 24px;
+    animation: glow 2s infinite ease-in-out;
+  }
+  @keyframes glow {
+    0%, 100% { text-shadow: 0 0 10px #d4af37, 0 0 20px #d4af37; }
+    50% { text-shadow: 0 0 20px #ffd700, 0 0 40px #ffd700; }
+  }
+
+  .cover-title {
+    font-size: 42px;
+    font-style: italic;
+    color: #f4e4bc;
+    text-shadow: 0 0 20px rgba(212, 175, 55, 0.6);
+    margin-bottom: 20px;
+    letter-spacing: 2px;
+  }
+
+  .cover-subtitle {
+    font-size: 18px;
+    color: #d4af37;
+    font-style: italic;
+    margin-bottom: 40px;
+    letter-spacing: 3px;
+  }
+
+  .open-btn {
+    background: transparent;
+    border: 2px solid #d4af37;
+    color: #f4e4bc;
+    padding: 12px 30px;
+    font-family: 'Georgia', serif;
+    font-size: 16px;
+    font-style: italic;
+    cursor: pointer;
+    border-radius: 30px;
+    letter-spacing: 2px;
+    transition: all 0.4s;
+    position: relative;
+    overflow: hidden;
+  }
+  .open-btn:hover {
+    background: rgba(212, 175, 55, 0.2);
+    box-shadow: 0 0 30px rgba(212, 175, 55, 0.6);
+    transform: scale(1.05);
+  }
+
+  /* Páginas internas */
+  .pages {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, #fdf6e3 0%, #f4e4bc 50%, #e8d5a0 100%);
+    border-radius: 4px 12px 12px 4px;
+    box-shadow: 
+      inset 0 0 80px rgba(139, 90, 43, 0.2),
+      0 10px 40px rgba(0,0,0,0.5);
+    padding: 60px 70px;
+    opacity: 0;
+    transition: opacity 1s ease-in 1s;
+    overflow-y: auto;
+    border-left: 6px solid #c9a86b;
+  }
+
+  .book.open .pages {
+    opacity: 1;
+  }
+
+  .pages::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background-image: 
+      radial-gradient(circle at 20% 30%, rgba(139, 90, 43, 0.05) 0%, transparent 50%),
+      radial-gradient(circle at 80% 70%, rgba(139, 90, 43, 0.08) 0%, transparent 50%);
+    pointer-events: none;
+  }
+
+  .page-content {
+    position: relative;
+    z-index: 2;
+    color: #3a2418;
+    line-height: 1.9;
+    font-size: 17px;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 1.5s ease 1.5s;
+  }
+
+  .book.open .page-content {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .page-content h1 {
+    font-size: 32px;
+    font-style: italic;
+    color: #6b3410;
+    text-align: center;
+    margin-bottom: 30px;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+  }
+
+  .page-content p {
+    margin-bottom: 18px;
+    text-align: justify;
+    text-indent: 30px;
+    font-style: italic;
+  }
+
+  .page-content .signature {
+    text-align: right;
+    margin-top: 30px;
+    font-size: 20px;
+    color: #6b3410;
+    font-style: italic;
+  }
+
+  .ornament {
+    text-align: center;
+    color: #8b5a2b;
+    font-size: 22px;
+    margin: 20px 0;
+    letter-spacing: 10px;
+  }
+
+  /* Scrollbar estilizada */
+  .pages::-webkit-scrollbar { width: 8px; }
+  .pages::-webkit-scrollbar-track { background: rgba(139, 90, 43, 0.1); }
+  .pages::-webkit-scrollbar-thumb { background: #c9a86b; border-radius: 4px; }
+
+  /* Fechar livro */
+  .close-btn {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    background: rgba(212, 175, 55, 0.2);
+    border: 1px solid #d4af37;
+    color: #f4e4bc;
+    padding: 10px 20px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-family: 'Georgia', serif;
+    font-style: italic;
+    opacity: 0;
+    transition: opacity 0.5s 2s;
+    z-index: 100;
+  }
+  .book.open ~ .close-btn { opacity: 1; }
+  .close-btn:hover { background: rgba(212, 175, 55, 0.4); }
+
+  @media (max-width: 750px) {
+    .book-scene { width: 95vw; height: 80vh; }
+    .cover-title { font-size: 28px; }
+    .pages { padding: 30px 25px; }
+    .page-content { font-size: 15px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="stars" id="stars"></div>
+
+<div class="book-scene">
+  <div class="book" id="book">
+    <div class="cover">
+      <div class="cover-title">Para Você</div>
+      <div class="cover-subtitle">~ um pequeno livro de memórias ~</div>
+      <button class="open-btn" onclick="openBook()">✦ Abrir ✦</button>
+    </div>
+    <div class="pages">
+      <div class="page-content">
+        <h1>Passar esses dias com você...</h1>
+        
+        <div class="ornament">❦ ✦ ❦</div>
+
+        <p>Passar esses dias com você foi uma coisa especial para mim — daquelas coisas que a gente sente no peito antes mesmo de conseguir explicar com palavras. Não foi só sobre o tempo que passou, foi sobre como ele passou: devagar, como se o mundo tivesse decidido, só por um instante, respirar no mesmo ritmo que a gente.</p>
+
+        <p>Eu não sei exatamente em que momento percebi que aqueles dias seriam diferentes. Talvez tenha sido no jeito como você ria de coisas bobas, talvez tenha sido no silêncio confortável que a gente compartilhava sem precisar preencher com conversa. Talvez tenha sido só no simples fato de você estar ali — presente, inteiro, inteiro de um jeito que poucos conseguem ser.</p>
+
+        <p>Tem gente que passa pela nossa vida e deixa marca. Você, nesses dias, deixou algo mais raro: deixou a sensação de que o tempo pode, sim, ser gentil. De que existem manhãs que valem a pena só porque alguém vai estar do outro lado delas. De que café, conversa, caminhada, olhar pela janela — tudo isso vira memória bonita quando é compartilhado com a pessoa certa.</p>
+
+        <p>Eu guardei cada detalhe. O jeito que você falava, as pausas entre as frases, as coisas que você nem percebeu que disse e que ficaram ecoando na minha cabeça dias depois. Guardei os pequenos gestos — aquele olhar de canto, aquela mão que encostava sem pedir licença, aquele "tchau" que já vinha com saudade de amanhã.</p>
+
+        <p>Se eu pudesse escolher uma palavra para descrever o que foi viver esses dias ao seu lado, seria <em>leveza</em>. Uma leveza que não é falta de profundidade — é exatamente o contrário. É a profundidade que se permite sorrir. É o carinho que não pesa, que não cobra, que só existe porque existe.</p>
+
+        <p>Obrigado por ter sido você. Obrigado pelos dias, pelas noites, pelos quase-nadas que viraram tudo. Obrigado por me lembrar que a vida, quando bem vivida, cabe inteira em um olhar, em uma risada, em um "fica mais um pouco".</p>
+
+        <p>Que esses dias não sejam um ponto final, mas uma vírgula. Que a gente ainda tenha muitos outros — iguais, diferentes, melhores, piores, nossos. Que o que a gente construiu nesses dias continue crescendo em silêncio, mesmo quando a distância ou a rotina tentarem dizer o contrário.</p>
+
+        <p>Porque passar esses dias com você, sinceramente, foi uma das coisas mais especiais que me aconteceram. E eu quero que você saiba disso — hoje, amanhã, e sempre que você precisar lembrar que é importante pra alguém.</p>
+
+        <div class="ornament">✦ ❦ ✦</div>
+
+        <p class="signature">Com todo o carinho do mundo,<br>— de quem não vai esquecer.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<button class="close-btn" onclick="closeBook()">✦ Fechar o livro ✦</button>
+
+<script>
+  // Criar estrelas
+  const starsContainer = document.getElementById('stars');
+  for (let i = 0; i < 120; i++) {
+    const star = document.createElement('div');
+    star.className = 'star';
+    const size = Math.random() * 3 + 1;
+    star.style.width = size + 'px';
+    star.style.height = size + 'px';
+    star.style.left = Math.random() * 100 + '%';
+    star.style.top = Math.random() * 100 + '%';
+    star.style.animationDelay = Math.random() * 3 + 's';
+    star.style.animationDuration = (Math.random() * 3 + 2) + 's';
+    starsContainer.appendChild(star);
+  }
+
+  // Partículas mágicas
+  function createParticle() {
+    const particle = document.createElement('div');
+    particle.className = 'particle';
+    particle.style.left = Math.random() * 100 + '%';
+    particle.style.animationDuration = (Math.random() * 5 + 5) + 's';
+    particle.style.animationDelay = Math.random() * 2 + 's';
+    document.body.appendChild(particle);
+    setTimeout(() => particle.remove(), 10000);
+  }
+  setInterval(createParticle, 400);
+
+  // Abrir e fechar livro
+  function openBook() {
+    document.getElementById('book').classList.add('open');
+  }
+  function closeBook() {
+    document.getElementById('book').classList.remove('open');
+  }
+</script>
+
+</body>
+</html>
